@@ -81,7 +81,7 @@ export ethernet_dev=$(ip a | grep -o '\ben[^[:space:]]*'|grep :|sed 's/://g')
 #Main process
 cat /etc/dhcpcd.conf | grep "interface $ethernet_dev" \
 	|| echo -e "interface $ethernet_dev\nstatic domain_name_servers=1.1.1.1 1.0.0.1" >> /etc/dhcpcd.conf
-dhcpcd $wifi_dev
+dhcpcd $ethernet_dev
 echo -e 'nameserver 1.1.1.1\nnameserver 1.0.0.1' > /etc/resolv.conf
 
 ;;
