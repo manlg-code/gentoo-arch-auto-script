@@ -25,7 +25,7 @@ read confirm
 
                                                  if [ "$confirm" = "yes" ] ; then
                                                        echo "executing..." ;
-mount | grep -q /dev/$disk_name | grep -q $mount_point || eval $mount_root ; 
+mount | grep /dev/$disk_name | grep -q $mount_point || eval $mount_root ; 
 mount | grep -q $mount_point/proc                      || eval $proc       ;
 mount | grep -q $mount_point/dev                       || eval $dev        ;
 mount | grep -q $mount_point/sys                       || eval $sys        ;
