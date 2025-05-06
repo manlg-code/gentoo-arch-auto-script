@@ -3,11 +3,11 @@
 echo Loading...
 
 #Check Connection
-ping -c1 google.com|grep -q ms \
-        && echo -e "\nCheck current connection: \
-        \n$(ping -c1 google.com|grep PING) \
-        \n$(ping -c1 google.com|grep avg)" \
-        || echo -e "\nCheck current connection: FAIL"
+export ping_test=$(ping -c1 google.com | grep PING)
+
+if [ "$ping_test" = "" ] ; then
+        echo -e "\n\e[91mCheck current connection: FAIL\e[0m" ; else
+        echo -e "\nCheck current connecttion:\n\e[92m$ping_test\e[0m" ; fi
 
 #Check necessary package
 if [ -x /usr/bin/iw ] || [ -x /usr/sbin/iw ] ; then
@@ -70,14 +70,16 @@ export ssid_validation=$(
         | grep -qx "$wifi_name" && echo 'Valid. PERFECT.' \
         || echo -e '\e[91mInvalid\e[0m. \e[96mRequire Script Restart.\e[0m')\n")
 
-echo $wifi_scanability | grep -q 'scan by' \
+echo $wifi_scanability | grep -qx 'scan by iw' \
         && echo "$ssid_validation" \
-        ; echo "$ssid_validation" \
+        && echo "$ssid_validation" \
         | grep -q Restart \
-        && exit \
+        && exit
+
+echo $wifi_scanability | grep -qx 'scan by iw' \
         || echo -e "\n\e[91mCannot Checking: iw is missing to scan wifi\e[0m\n"
 
-echo -ne '\e[95mType Wifi \e[93mpassword\e[95m then press Enter \e[93m(No Checking Process)\e[95m:\e[0m '
+echo -ne '\n\e[95mType Wifi \e[93mpassword\e[95m then press Enter \e[93m(No Checking Process)\e[95m:\e[0m '
 read wifi_pass
 
 wpa_passphrase "$wifi_name" "$wifi_pass" > /etc/wpa_supplicant/wifi_name_pass.conf
@@ -104,3 +106,4 @@ echo -e 'nameserver 1.1.1.1\nnameserver 1.0.0.1' > /etc/resolv.conf
 ;;
 
 esac
+
